@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quick Question? 💗</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Trebuchet MS", sans-serif;
+            background: linear-gradient(
+                135deg,
+                #ffd6e7,
+                #fff0f5,
+                #ffb6cf
+            );
+            overflow: hidden;
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            width: min(90%, 430px);
+            padding: 35px 22px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid white;
+            border-radius: 28px;
+            box-shadow: 0 12px 40px rgba(230, 80, 130, 0.2);
+        }
+
+        .heart {
+            font-size: 55px;
+            animation: heartbeat 1s infinite;
+        }
+
+        h1 {
+            color: #d6336c;
+            font-size: clamp(25px, 6vw, 34px);
+            margin: 18px 0 10px;
+        }
+
+        p {
+            color: #a64d70;
+            margin-bottom: 25px;
+        }
+
+        .play-area {
+            position: relative;
+            width: 100%;
+            max-width: 340px;
+            height: 150px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .choice {
+            position: absolute;
+            top: 30px;
+            display: inline-block;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition:
+                left 0.16s ease,
+                top 0.16s ease,
+                transform 0.16s ease,
+                opacity 0.2s ease;
+        }
+
+        #yes {
+            left: 8%;
+            color: white;
+            background: #ff4f87;
+            box-shadow: 0 5px 12px #ffb1cb;
+            text-decoration: none;
+        }
+
+        #yes:hover {
+            background: #e83270;
+            box-shadow: 0 7px 16px #ffb1cb;
+        }
+
+        #no {
+            left: 56%;
+            color: #d6336c;
+            background: #ffe1eb;
+            transform-origin: center;
+            touch-action: manipulation;
+        }
+
+        .footer {
+            font-size: 12px;
+            margin-top: 12px;
+            color: #c47b98;
+        }
+
+        .floating-heart {
+            position: fixed;
+            bottom: -35px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 6s linear forwards;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-110vh) rotate(35deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .card {
+                padding: 28px 14px;
+            }
+
+            .choice {
+                padding: 11px 19px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="card">
+        <div class="heart">💗</div>
+
+        <h1>Want to see a surprise?</h1>
+
+        <p>
+            I have a very important question for you...
+        </p>
+
+        <div class="play-area" id="playArea">
+
+            <a
+                class="choice"
+                id="yes"
+                href="https://rhuizzz.github.io/Hiiii/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Yes 💖
+            </a>
+
+            <button
+                class="choice"
+                id="no"
+                type="button"
+            >
+                No 🙄
+            </button>
+
+        </div>
+
+        <div class="footer">
+            Trust ♡
+        </div>
+    </main>
+
+    <script>
+        const noButton = document.getElementById("no");
+        const playArea = document.getElementById("playArea");
+
+        let attempts = 0;
+        let isGone = false;
+
+        function moveNoButton() {
+            if (isGone) return;
+
+            attempts++;
+
+            // Calculate the available space.
+            const areaWidth = playArea.clientWidth;
+            const areaHeight = playArea.clientHeight;
+
+            // Shrink gradually with each click or touch.
+            const scale = Math.max(0.12, 1 - attempts * 0.12);
+
+            noButton.style.transform = `scale(${scale})`;
+
+            // Account for the button's shrinking size.
+            const buttonWidth = noButton.offsetWidth * scale;
+            const buttonHeight = noButton.offsetHeight * scale;
+
+            const maxX = Math.max(0, areaWidth - buttonWidth);
+            const maxY = Math.max(0, areaHeight - buttonHeight);
+
+            // Teleport to a random position.
+            noButton.style.left =
+                Math.random() * maxX + "px";
+
+            noButton.style.top =
+                Math.random() * maxY + "px";
+
+            // After seven attempts, make it disappear.
+            if (attempts >= 7) {
+                isGone = true;
+                noButton.style.opacity = "0";
+                noButton.style.pointerEvents = "none";
+                noButton.disabled = true;
+                noButton.setAttribute("aria-hidden", "true");
+            }
+        }
+
+        // Clicking or tapping No makes it move.
+        noButton.addEventListener("click", moveNoButton);
+
+        // On desktop, it also runs away from the mouse.
+        noButton.addEventListener("mouseenter", moveNoButton);
+
+        // Create floating hearts in the background.
+        function createHeart() {
+            const heart = document.createElement("span");
+
+            heart.className = "floating-heart";
+
+            const hearts = ["💗", "💕", "💖", "💘", "🌸"];
+
+            heart.textContent =
+                hearts[Math.floor(Math.random() * hearts.length)];
+
+            heart.style.left = Math.random() * 100 + "vw";
+
+            heart.style.fontSize =
+                (15 + Math.random() * 20) + "px";
+
+            heart.style.animationDuration =
+                (4 + Math.random() * 4) + "s";
+
+            document.body.appendChild(heart);
+
+            // Remove old hearts to keep the page lightweight.
+            setTimeout(() => heart.remove(), 8500);
+        }
+
+        // Start the background animation.
+        setInterval(createHeart, 650);
+    </script>
+
+</body>
+</html>
